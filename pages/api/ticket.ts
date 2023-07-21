@@ -35,9 +35,16 @@ function reviewPrompt(ticket) {
   la priorità può essere: alta, media, bassa
   lo stato puo' essere:aperto, chiuso, in lavorazione, in attesa, rifiutato
     la categoria è una stringa che può essere: hardware, software, rete, altro
-    oggi è il ${new Date().toLocaleDateString('it-IT')}  
+    oggi è il ${new Date().toLocaleDateString('it-IT')}  e il campo date in formato italiano
+    e  deve essere calcolato sulla base dell informazioni presenti in :${ticket.product} 
+    title è il topic del ticket massimo due parole
+    description è la descrizione del ticket
+  
+
+  
+  
+
   `
   console.log(ciao);
-  return ciao;
-
+  return ciao
 }
