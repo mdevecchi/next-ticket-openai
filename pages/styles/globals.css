@@ -135,3 +135,11 @@ pre code.hljs {
   .hljs-strong {
     font-weight: bold;
   }
+.error {
+  border: 1px solid red;
+}
+
+/* Stile per il messaggio di errore */
+.error-message {
+  color: red;
+}

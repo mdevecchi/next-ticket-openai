@@ -3,12 +3,16 @@ import { useState, useRef, useEffect } from "react";
 import hljs from "highlight.js";
 import React from "react";
 
-export default function Review() {
+export default function Ticket() {
   // Create a ref for the div element
   const textDivRef = useRef<HTMLDivElement>(null);
   const [productInput, setProductInput] = useState("");
+  const [nome, setNome] = useState("");
+  const [cognome, setCognome] = useState("");
+  const [email, setEmail] = useState("");
   const [result, setResult] = useState(() => "");
   const [isLoading, setIsLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
 
     // Add a click event listener to the copy icon that copies the text in the div to the clipboard when clicked
@@ -43,12 +47,16 @@ export default function Review() {
   async function onSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
-    const response = await fetch("/api/review", {
+    setSubmitted(true);
+    if (!nome || !cognome || !email || !productInput) {
+        return;
+    }
+    const response = await fetch("/api/ticket", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ product: productInput }),
+      body: JSON.stringify({ product: productInput, nome: nome, cognome: cognome, email: email}),
     });
     const data = await response.json();
     console.log("data", data);
@@ -62,15 +70,18 @@ export default function Review() {
 
     // set result to the highlighted code. Address this error: Argument of type 'string' is not assignable to parameter of type '(prevState: undefined) => undefined'.ts(2345)
     setResult(hljsResult);
-
+    setSubmitted(true);
     setProductInput("");
+    setCognome("");
+    setNome("");
     setIsLoading(false);
+    setSubmitted(false);
   }
 
   return (
     <div>
   <Head>
-      <title>OpenAI API Starter - Review generator</title>
+      <title>OpenAI API Supporto clienti</title>
       <meta name="description" content="" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
@@ -80,30 +91,53 @@ export default function Review() {
                     items-center justify-center m-20"
       >
         <h3 className="text-slate-900 text-xl mb-3">
-          Product Review Generator
+          OpenAI API Supporto clienti
         </h3>
         <p className="text-slate-700 text-lg mb-3">
-          Open AI starter app to generate product reviews
+          Open AI starter app
         </p>
         <form onSubmit={onSubmit}>
+          <label>
+            Nome:
+            <input  className={`text-sm text-gray-base w-full
+                              mr-3 py-5 px-4 h-2 border
+                              border-gray-200 rounded mb-2 ${submitted && !nome ? 'error' : ''}`} type="text" value={nome} onChange={e => setNome(e.target.value)} />
+          </label>
+          <br />
+          <label>
+            Cognome:
+            <input  className={`text-sm text-gray-base w-full
+                              mr-3 py-5 px-4 h-2 border
+                              border-gray-200 rounded mb-2 ${submitted && !cognome ? 'error' : ''}`} type="text" value={cognome} onChange={e => setCognome(e.target.value)} />
+          </label>
+          <label>
+            Email:
+            <input  className={`text-sm text-gray-base w-full
+                              mr-3 py-5 px-4 h-2 border
+                              border-gray-200 rounded mb-2 ${submitted && !email ? 'error' : ''}`} type="email" value={email} onChange={e => setEmail(e.target.value)} />
+          </label>
+            <br />
+          <label>
+          Problema:
           <input
-            className="text-sm text-gray-base w-full 
-                              mr-3 py-5 px-4 h-2 border 
-                              border-gray-200 rounded mb-2"
+            className={`text-sm text-gray-base w-full
+                              mr-3 py-5 px-4 h-2 border
+                              border-gray-200 rounded mb-2 ${submitted && !productInput ? 'error' : ''}`}
                               
             type="text"
             name="product"
-            placeholder="Enter a product name"
+            placeholder="Enter a problem "
             value={productInput}
             onChange={(e) => setProductInput(e.target.value)}
           />
+            </label>
 
           <button
             className="text-sm w-full bg-fuchsia-600 h-7 text-white
                               rounded-2xl mb-10"
             type="submit"
           >
-            Generate article
+            Invia la richiesta
           </button>
         </form>
         {isLoading ? (
