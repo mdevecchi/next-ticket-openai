@@ -8,13 +8,14 @@ const openai = new OpenAIApi(configuration);
 
 export default async function (req, res) {
   console.error(process.env.OPENAI_API_KEY)
-  const completion = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: reviewPrompt(req.body),
-    max_tokens: 2000,
-    temperature: 0.2,
+  const createImage = await  openai.createImage({
+    prompt: req.body.message,
+    n:2,
+    size: "1024x1024",
+    response_format:"b64_json"
   });
-  res.status(200).json({ result: completion.data.choices[0].text });
+  console.log(createImage.data);
+  res.status(200).json({ result: createImage.data.data });
 }
 
 function reviewPrompt(ticket) {
